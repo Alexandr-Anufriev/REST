@@ -4,6 +4,7 @@ import anufriev.REST.model.User;
 import anufriev.REST.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -21,36 +22,35 @@ public class RestAdminController {
     }
 
     @GetMapping("/all")
-    public List<User> showAllUsers() {
-        return userService.allUsers();
+    public ResponseEntity<List<User>> showAllUsers() {
+        return new ResponseEntity<>(userService.allUsers(), HttpStatus.OK);
     }
 
-    @GetMapping("/currentUser")
-    public User currentUser(Principal principal) {
-        System.out.println(principal);
-        return userService.getUserByName(principal.getName());
-    }
+//    @GetMapping("/currentUser")
+//    public ResponseEntity<User> currentUser(Principal principal) {
+//        return new ResponseEntity<>(userService.getUserByName(principal.getName()), HttpStatus.OK) ;
+//    }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<User> getUser(@PathVariable long id) {
+        return  new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void addUser(@RequestBody User newUser){
-        System.out.println("вызвался addUser: " + newUser);
+    public ResponseEntity<User> addUser(@RequestBody User newUser){
         userService.addUser(newUser);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable long id) {
-        System.out.println("delete " + id);
+    public ResponseEntity<User> deleteUser(@PathVariable long id) {
         userService.delete(userService.getUserById(id));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-    @ResponseStatus(HttpStatus.CREATED)
+
     @PutMapping
-    public void updateUser(@RequestBody User updatedUser) {
+    public ResponseEntity<User> updateUser(@RequestBody User updatedUser) {
         userService.update(updatedUser);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

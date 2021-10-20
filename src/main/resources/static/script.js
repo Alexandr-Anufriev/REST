@@ -1,7 +1,7 @@
 const url = 'http://localhost:8080/admin'
 
-// email и роли авторизованного юзера в навигационной панеле
-fetch("http://localhost:8080/admin/currentUser")
+// email и роли авторизованного ADMIN в навигационной панеле
+fetch("http://localhost:8080/currentUser")
     .then(response => response.json())
     .then(data => {
         document.getElementById('userId').innerText = data.id;
@@ -18,30 +18,29 @@ fetch("http://localhost:8080/admin/currentUser")
         document.getElementById("role-in-nav").innerText = roles;
         document.getElementById("userRoles").innerText = roles;
     })
-
-fetch("http://localhost:8080/user/currentUser")
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('userId').innerText = data.id;
-        document.getElementById('userFirstName').innerText = data.username;
-        document.getElementById('userLastName').innerText = data.lastname;
-        document.getElementById('userAge').innerText = data.age;
-        document.getElementById('userEmail').innerText = data.email;
-        document.getElementById("email-in-nav").innerText = data.email;
-        let roles = '';
-        data.roles.forEach(role => {
-            roles += ' ' + role.name;
-        })
-        roles = roles.replaceAll("ROLE_", "")
-        document.getElementById("role-in-nav").innerText = roles;
-        document.getElementById("userRoles").innerText = roles;
-    })
+// email и роли авторизованного USER в навигационной панеле
+// fetch("http://localhost:8080/user/currentUser")
+//     .then(response => response.json())
+//     .then(data => {
+//         document.getElementById('userId').innerText = data.id;
+//         document.getElementById('userFirstName').innerText = data.username;
+//         document.getElementById('userLastName').innerText = data.lastname;
+//         document.getElementById('userAge').innerText = data.age;
+//         document.getElementById('userEmail').innerText = data.email;
+//         document.getElementById("email-in-nav").innerText = data.email;
+//         let roles = '';
+//         data.roles.forEach(role => {
+//             roles += ' ' + role.name;
+//         })
+//         roles = roles.replaceAll("ROLE_", "")
+//         document.getElementById("role-in-nav").innerText = roles;
+//         document.getElementById("userRoles").innerText = roles;
+//     })
 
 // все юзеры
 const table = document.getElementById('table-all-users')
 let out = '';
 tableResult()
-
 function tableResult() {
     out = ""
     table.innerText = ""
@@ -88,9 +87,21 @@ function tableResult() {
         });
 }
 
+function clearTable() {
+    table.innerText = "";
+}
+
 // new user
 const newUserForm = document.getElementById('newUserForm');
 newUserForm.addEventListener('submit', data => {
+    // $('#firstName').empty().val('')
+    // $('#lastName').empty().val('')
+    // $('#age').empty().val('')
+    // $('#email').empty().val('')
+    // $('#password').empty().val('')
+    // $('#roles').empty().val('')
+
+
     data.preventDefault();
     console.log('кнопка нажата')
     const select = data.target.roles;
@@ -121,13 +132,15 @@ newUserForm.addEventListener('submit', data => {
         body: JSON.stringify(user)
     })
         .then(response => console.log(response.status))
-        .then(tableResult)
+        .then(()=>{
+            $('#table-all-users').empty(); //                                     тут
+            tableResult()
+        })
         .catch(e => console.error(e));
     $(".adm-btn").click();
-
 })
 
-// модальное окно edit
+// заполнение модального окна edit
 function getProfileForEdit(id) {
     fetch(url + '/' + id)
         .then(response => response.json())
@@ -137,12 +150,13 @@ function getProfileForEdit(id) {
             document.getElementById('editLastName').value = user.lastname;
             document.getElementById('editAge').value = user.age;
             document.getElementById('editEmail').value = user.email;
+            document.getElementById('editPassword').value = null;
+            document.getElementById('editRole').value = null;
         })
 }
-
-const editForm = document.getElementById('editForm');
-
+// отправка editForm
 function sendProfileForEdit() {
+    const editForm = document.getElementById('editForm');
     editForm.addEventListener('submit', (data) => {
         data.preventDefault();
         const select = data.target.editRole;
@@ -174,13 +188,17 @@ function sendProfileForEdit() {
             body: JSON.stringify(user),
         })
             .then((response) => console.log(response.status))
-            .then(tableResult)
+            .then(()=> {
+                clearTable();
+                tableResult();
+            })
             .catch(e => console.error(e))
-
     });
+    // location.reload()
     $(".btn-close").click();
 }
 
+// заполнение модального окна delete
 function getProfileForDelete(id) {
     fetch(url + '/' + id)
         .then(response => response.json())
@@ -192,7 +210,7 @@ function getProfileForDelete(id) {
             document.getElementById('deleteEmail').value = user.email;
         })
 }
-
+// отправка deleteForm
 function sendFormDeleteProfile() {
     const deleteForm = document.getElementById('deleteForm');
     deleteForm.addEventListener('submit', data => {

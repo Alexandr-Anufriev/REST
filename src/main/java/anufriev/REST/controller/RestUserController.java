@@ -20,8 +20,8 @@ public class RestUserController {
         this.userService = userService;
     }
 
-    @GetMapping("/currentUser")
-    public User currentUser(Principal principal) {
-        return userService.getUserByName(principal.getName());
-    }
+//    @GetMapping("/currentUser")
+//    public User currentUser(Principal principal) {
+//        return userService.getUserByName(principal.getName());
+//    }
 }

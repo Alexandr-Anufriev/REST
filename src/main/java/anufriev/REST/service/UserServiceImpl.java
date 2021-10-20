@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -35,8 +34,22 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void update(User user) {
-        String pass = passwordEncoder.encode(user.getPassword());
-        user.setPassword(pass);
+        // проверка наличия пароля
+        if (user.getPassword()=="") {
+            String password = userRepo.getById(user.getId()).getPassword();
+            user.setPassword(password);
+        } else {
+            String password = user.getPassword();
+            user.setPassword(passwordEncoder.encode(password));
+        }
+        // проверка наличия ролей
+        System.out.println("роли: " + user.getRoles());
+        if (user.getRoles().isEmpty()){
+            System.out.println("роли пустые, пэтому приписывает предидущие");
+            user.setRoles(userRepo.getById(user.getId()).getRoles());
+        }
+//        String pass = passwordEncoder.encode(user.getPassword());
+//        user.setPassword(pass);
         userRepo.save(user);
     }
 

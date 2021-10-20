@@ -10,9 +10,9 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;
 
-@Data
+
 @Entity
-@Table
+@Table(name="users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,12 +37,6 @@ public class User implements UserDetails {
         this.password = password;
         this.roles = roles;
     }
-
-//    public User(String username, String password, Set<Role> roles) {
-//        this.username = username;
-//        this.password = password;
-//        this.roles = roles;
-//    }
 
     public Long getId() {
         return id;
