@@ -122,11 +122,13 @@
                                             <label for="roles" class="form-label mb-0 d-flex justify-content-center"><b>Role</b></label>
                                             <select class="form-select mb-3" size="2" id="roles" name="roles" multiple
                                                     aria-label="multiple select example">
-                                                <option value="1">ADMIN</option>
-                                                <option value="2" selected>USER</option>
+                                                <option value="ADMIN">ADMIN</option>
+                                                <option value="USER" selected>USER</option>
                                             </select>
                                             <div class="d-grid gap-2 d-flex justify-content-center">
-                                                <button id="newUserButton" type="submit" class="btn btn-success" aria-controls="userTable" data-bs-toggle="tab" data-bs-target="#userTable" role="tab">Add new user</button>
+                                                <button id="newUserButton" type="submit" class="btn btn-success"
+                                                        aria-controls="userTable" data-bs-toggle="tab" data-bs-target="#userTable"
+                                                        role="tab" onclick="addUser()">Add new user</button>
                                             </div>
                                         </form>
                                     </div>
@@ -229,8 +231,8 @@
                     <select class="form-select mb-3" size="2"
                             id="editRole" multiple name="roles"
                             aria-label="multiple select example">
-                        <option value="1">ADMIN</option>
-                        <option value="2">USER</option>
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="USER">USER</option>
                     </select>
                 </div>
                 <div class="modal-footer">

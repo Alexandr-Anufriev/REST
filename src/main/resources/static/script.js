@@ -18,29 +18,12 @@ fetch("http://localhost:8080/currentUser")
         document.getElementById("role-in-nav").innerText = roles;
         document.getElementById("userRoles").innerText = roles;
     })
-// email и роли авторизованного USER в навигационной панеле
-// fetch("http://localhost:8080/user/currentUser")
-//     .then(response => response.json())
-//     .then(data => {
-//         document.getElementById('userId').innerText = data.id;
-//         document.getElementById('userFirstName').innerText = data.username;
-//         document.getElementById('userLastName').innerText = data.lastname;
-//         document.getElementById('userAge').innerText = data.age;
-//         document.getElementById('userEmail').innerText = data.email;
-//         document.getElementById("email-in-nav").innerText = data.email;
-//         let roles = '';
-//         data.roles.forEach(role => {
-//             roles += ' ' + role.name;
-//         })
-//         roles = roles.replaceAll("ROLE_", "")
-//         document.getElementById("role-in-nav").innerText = roles;
-//         document.getElementById("userRoles").innerText = roles;
-//     })
 
 // все юзеры
 const table = document.getElementById('table-all-users')
 let out = '';
 tableResult()
+
 function tableResult() {
     out = ""
     table.innerText = ""
@@ -87,58 +70,87 @@ function tableResult() {
         });
 }
 
-function clearTable() {
-    table.innerText = "";
-}
-
-// new user
-const newUserForm = document.getElementById('newUserForm');
-newUserForm.addEventListener('submit', data => {
-    // $('#firstName').empty().val('')
-    // $('#lastName').empty().val('')
-    // $('#age').empty().val('')
-    // $('#email').empty().val('')
-    // $('#password').empty().val('')
-    // $('#roles').empty().val('')
-
-
-    data.preventDefault();
-    console.log('кнопка нажата')
-    const select = data.target.roles;
-    let len = select.options.length;
+function addUser() {
+    event.preventDefault();
+    let select = $("#roles").val();
     let roles = [];
-    for (let i = 0; i < len; i++) {
-        if (select.options[i].selected === true) {
-            roles.push({
-                id: select.options[i].value,
-                name: select.options[i].text,
-            });
-        }
+    for (let i = 0; i < select.length; i++) {
+        roles.push({
+            id: select[i] === 'ADMIN' ? 1 : 2,
+            name: select[i],
+        });
     }
     let user = {
-        username: `${data.target.firstName.value}`,
-        lastname: `${data.target.lastName.value}`,
-        age: `${data.target.age.value}`,
-        email: `${data.target.email.value}`,
-        password: `${data.target.password.value}`,
-        roles: roles
+        username: $('#firstName').val(),
+        lastname: $('#lastName').val(),
+        age: $('#age').val(),
+        email: $('#email').val(),
+        password: $('#password').val(),
+        roles: roles,
     };
     console.log(JSON.stringify(user));
     fetch(url, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
-            'Content-Type': 'application/json; charset=UTF-8'
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify(user)
+        body: JSON.stringify(user),
     })
-        .then(response => console.log(response.status))
-        .then(()=>{
-            $('#table-all-users').empty(); //                                     тут
-            tableResult()
-        })
-        .catch(e => console.error(e));
+        .then((response) => console.log(response.status))
+        .then(tableResult)
+        .then(clearForm)
+        .catch(e => console.error(e))
+
     $(".adm-btn").click();
-})
+}
+
+function clearForm() {
+    $('#firstName').empty().val('')
+    $('#lastName').empty().val('')
+    $('#age').empty().val('')
+    $('#email').empty().val('')
+    $('#password').empty().val('')
+}
+
+// new user
+// const newUserForm = document.getElementById('newUserForm');
+// newUserForm.addEventListener('submit', data => {
+//     data.preventDefault();
+//     const select = data.target.roles;
+//     let len = select.options.length;
+//     let roles = [];
+//     for (let i = 0; i < len; i++) {
+//         if (select.options[i].selected === true) {
+//             roles.push({
+//                 id: select.options[i].value,
+//                 name: select.options[i].text,
+//             });
+//         }
+//     }
+//     let user = {
+//         username: `${data.target.firstName.value}`,
+//         lastname: `${data.target.lastName.value}`,
+//         age: `${data.target.age.value}`,
+//         email: `${data.target.email.value}`,
+//         password: `${data.target.password.value}`,
+//         roles: roles
+//     };
+//     console.log(JSON.stringify(user));
+//     fetch(url, {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json; charset=UTF-8'
+//         },
+//         body: JSON.stringify(user)
+//     })
+//         .then(response => console.log(response.status))
+//         .then(() => {
+//             $('#table-all-users').empty();
+//             tableResult()
+//         })
+//         .catch(e => console.error(e));
+//     $(".adm-btn").click();
+// })
 
 // заполнение модального окна edit
 function getProfileForEdit(id) {
@@ -154,47 +166,39 @@ function getProfileForEdit(id) {
             document.getElementById('editRole').value = null;
         })
 }
+
 // отправка editForm
 function sendProfileForEdit() {
-    const editForm = document.getElementById('editForm');
-    editForm.addEventListener('submit', (data) => {
-        data.preventDefault();
-        const select = data.target.editRole;
-        let len = select.options.length;
+        event.preventDefault();
+        let select = $("#editRole").val();
+        console.log(select)
         let roles = [];
-        for (let i = 0; i < len; i++) {
-            if (select.options[i].selected === true) {
+        for (let i = 0; i < select.length; i++) {
                 roles.push({
-                    id: select.options[i].value,
-                    name: select.options[i].text,
+                    id: select[i] === 'ADMIN' ? 1 : 2,
+                    name: select[i],
                 });
-            }
         }
         let user = {
-            id: `${data.target.editId.value}`,
-            username: `${data.target.editFirstName.value}`,
-            lastname: `${data.target.editLastName.value}`,
-            age: `${data.target.editAge.value}`,
-            email: `${data.target.editEmail.value}`,
-            password: `${data.target.editPassword.value}`,
+            id: $('#editId').val(),
+            username: $('#editFirstName').val(),
+            lastname: $('#editLastName').val(),
+            age: $('#editAge').val(),
+            email: $('#editEmail').val(),
+            password: $('#editPassword').val(),
             roles: roles,
         };
         console.log(JSON.stringify(user));
         fetch(url, {
             method: 'PUT',
             headers: {
-                'Content-type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(user),
         })
             .then((response) => console.log(response.status))
-            .then(()=> {
-                clearTable();
-                tableResult();
-            })
+            .then(tableResult)
             .catch(e => console.error(e))
-    });
-    // location.reload()
     $(".btn-close").click();
 }
 
@@ -210,17 +214,15 @@ function getProfileForDelete(id) {
             document.getElementById('deleteEmail').value = user.email;
         })
 }
+
 // отправка deleteForm
 function sendFormDeleteProfile() {
-    const deleteForm = document.getElementById('deleteForm');
-    deleteForm.addEventListener('submit', data => {
-        data.preventDefault();
-        let id = `${data.target.deleteId.value}`
+        event.preventDefault();
+        let id = $("#deleteId").val()
         console.log(`delete:  ${id}`)
         fetch(url + '/' + id, {method: 'DELETE'})
             .then((response) => console.log(response.status))
             .then(tableResult)
             .catch(e => console.error(e))
         $(".btn-close").click();
-    })
 }

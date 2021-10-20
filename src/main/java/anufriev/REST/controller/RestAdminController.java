@@ -45,11 +45,12 @@ public class RestAdminController {
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable long id) {
         userService.delete(userService.getUserById(id));
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @PutMapping
     public ResponseEntity<User> updateUser(@RequestBody User updatedUser) {
+        System.out.println(updatedUser);
         userService.update(updatedUser);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
