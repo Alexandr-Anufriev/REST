@@ -28,17 +28,20 @@ public class User implements UserDetails {
     @Fetch(FetchMode.JOIN)
 //    @JsonManagedReference
     private Set<Role> roles;
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
 
     public User() {
     }
 
-    public User(String username, String lastname, int age, String email, String password, Set<Role> roles) {
+    public User(String username, String lastname, int age, String email, String password, Set<Role> roles, Provider provider) {
         this.username = username;
         this.lastname = lastname;
         this.age = age;
         this.email = email;
         this.password = password;
         this.roles = roles;
+        this.provider = provider;
     }
 
     public Long getId() {
@@ -93,6 +96,14 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    public Provider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
+
     //UserDetailsMethods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -128,4 +139,17 @@ public class User implements UserDetails {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", age=" + age +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                ", provider=" + provider +
+                '}';
+    }
 }

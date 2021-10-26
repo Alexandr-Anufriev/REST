@@ -1,5 +1,6 @@
 package anufriev.REST.security;
 
+import anufriev.REST.OAuth2.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,12 +16,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final SuccessHandler successHandler;
     private final PasswordEncoder passwordEncoder;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Autowired
-    public SecurityConfig(UserDetailsService userDetailsService, SuccessHandler successHandler, PasswordEncoder passwordEncoder) {
+    public SecurityConfig(UserDetailsService userDetailsService,
+                          SuccessHandler successHandler,
+                          PasswordEncoder passwordEncoder,
+                          CustomOAuth2UserService customOAuth2UserService) {
         this.userDetailsService = userDetailsService;
         this.successHandler = successHandler;
         this.passwordEncoder = passwordEncoder;
+        this.customOAuth2UserService = customOAuth2UserService;
     }
 
     @Override
@@ -29,13 +35,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/", "/login", "/oauth/**").permitAll()
                 .antMatchers("/user/**").hasRole("USER")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .and()
-                .formLogin()    //добавить страницу логина и хендлер
+                .oauth2Login()
                 .successHandler(successHandler)
-                .and().logout();
+                .and()
+                .formLogin()
+                .successHandler(successHandler)
+                .and()
+                .logout();
     }
 
     @Bean

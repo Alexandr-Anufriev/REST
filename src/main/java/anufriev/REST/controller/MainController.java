@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping()
 public class MainController {
+    private final Logger LOGGER = Logger.getLogger("<------- LOG: MainController ------->");
     private final UserService userService;
 
     @Autowired
@@ -35,6 +37,8 @@ public class MainController {
     @GetMapping("/currentUser")
     @ResponseBody
     public ResponseEntity<User> currentUser(Principal principal) {
-        return new ResponseEntity<>(userService.getUserByName(principal.getName()), HttpStatus.OK) ;
+        String[] name = principal.getName().split(" ");
+        LOGGER.info("currentUser " + name[0]);
+        return new ResponseEntity<>(userService.getUserByName(name[0]), HttpStatus.OK) ;
     }
 }

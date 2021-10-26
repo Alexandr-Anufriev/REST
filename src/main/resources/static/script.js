@@ -23,7 +23,6 @@ fetch("http://localhost:8080/currentUser")
 const table = document.getElementById('table-all-users')
 let out = '';
 tableResult()
-
 function tableResult() {
     out = ""
     table.innerText = ""
@@ -33,6 +32,7 @@ function tableResult() {
                 <th>Last name</th>
                 <th>Age</th>
                 <th>Email</th>
+                <th>Provider</th>
                 <th>Role</th>
                 <th>Edit</th>
                 <th>Delete</th>
@@ -61,6 +61,7 @@ function tableResult() {
                     <td>${user.lastname}</td>
                     <td>${user.age}</td>
                     <td>${user.email}</td>
+                    <td>${user.provider}</td>
                     <td>${userRole}</td>
                     <td>${editButton}</td>
                     <td>${deleteButton}</td>
@@ -70,6 +71,7 @@ function tableResult() {
         });
 }
 
+// добавление нового пользователя
 function addUser() {
     event.preventDefault();
     let select = $("#roles").val();
@@ -90,7 +92,7 @@ function addUser() {
     };
     console.log(JSON.stringify(user));
     fetch(url, {
-        method: 'PUT',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -104,6 +106,7 @@ function addUser() {
     $(".adm-btn").click();
 }
 
+// очистка формы нового пользователя
 function clearForm() {
     $('#firstName').empty().val('')
     $('#lastName').empty().val('')
@@ -111,46 +114,6 @@ function clearForm() {
     $('#email').empty().val('')
     $('#password').empty().val('')
 }
-
-// new user
-// const newUserForm = document.getElementById('newUserForm');
-// newUserForm.addEventListener('submit', data => {
-//     data.preventDefault();
-//     const select = data.target.roles;
-//     let len = select.options.length;
-//     let roles = [];
-//     for (let i = 0; i < len; i++) {
-//         if (select.options[i].selected === true) {
-//             roles.push({
-//                 id: select.options[i].value,
-//                 name: select.options[i].text,
-//             });
-//         }
-//     }
-//     let user = {
-//         username: `${data.target.firstName.value}`,
-//         lastname: `${data.target.lastName.value}`,
-//         age: `${data.target.age.value}`,
-//         email: `${data.target.email.value}`,
-//         password: `${data.target.password.value}`,
-//         roles: roles
-//     };
-//     console.log(JSON.stringify(user));
-//     fetch(url, {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json; charset=UTF-8'
-//         },
-//         body: JSON.stringify(user)
-//     })
-//         .then(response => console.log(response.status))
-//         .then(() => {
-//             $('#table-all-users').empty();
-//             tableResult()
-//         })
-//         .catch(e => console.error(e));
-//     $(".adm-btn").click();
-// })
 
 // заполнение модального окна edit
 function getProfileForEdit(id) {

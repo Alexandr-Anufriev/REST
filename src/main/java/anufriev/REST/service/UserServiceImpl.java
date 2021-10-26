@@ -1,5 +1,7 @@
 package anufriev.REST.service;
 
+import anufriev.REST.model.Provider;
+import anufriev.REST.model.Role;
 import anufriev.REST.model.User;
 import anufriev.REST.repository.RoleRepo;
 import anufriev.REST.repository.UserRepo;
@@ -9,7 +11,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -43,19 +47,26 @@ public class UserServiceImpl implements UserService{
             user.setPassword(passwordEncoder.encode(password));
         }
         // проверка наличия ролей
-        System.out.println("роли: " + user.getRoles());
         if (user.getRoles().isEmpty()){
-            System.out.println("роли пустые, пэтому приписывает предидущие");
             user.setRoles(userRepo.getById(user.getId()).getRoles());
         }
-//        String pass = passwordEncoder.encode(user.getPassword());
-//        user.setPassword(pass);
+        user.setProvider(userRepo.getById(user.getId()).getProvider());
         userRepo.save(user);
     }
 
     @Override
     public void delete(User user) {
         userRepo.delete(user);
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return userRepo.existsByUsername(username);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepo.existsByEmail(email);
     }
 
     @Override

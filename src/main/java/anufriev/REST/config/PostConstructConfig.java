@@ -1,5 +1,6 @@
 package anufriev.REST.config;
 
+import anufriev.REST.model.Provider;
 import anufriev.REST.model.Role;
 import anufriev.REST.model.User;
 import anufriev.REST.repository.RoleRepo;
@@ -51,6 +52,7 @@ public class PostConstructConfig {
             roleSet.add(roleRepo.findByName("ROLE_ADMIN"));
             roleSet.add(roleRepo.findByName("ROLE_USER"));
             User user = new User();
+            user.setProvider(Provider.LOCAL);
             user.setUsername("admin");
             user.setPassword(passwordEncoder().encode("admin"));
             user.setLastname("adminovyan");
@@ -66,6 +68,7 @@ public class PostConstructConfig {
             Set<Role> roleSet = new HashSet<>();
             roleSet.add(roleRepo.findByName("ROLE_USER"));
             User user = new User();
+            user.setProvider(Provider.LOCAL);
             user.setUsername("user");
             user.setPassword(passwordEncoder().encode("user"));
             user.setLastname("userzian");
